@@ -4,7 +4,19 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
+    <Title>HammerQueue Testing</Title>
+    <Copyright>2024 © Jawid Hassim</Copyright>
+    <Description>Console Application For Benchmarking Functions</Description>
+    <RepositoryUrl>https://github.com/JawzoD3TH/HammerQueue</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\HammerQueue\HammerQueue.csproj" />
