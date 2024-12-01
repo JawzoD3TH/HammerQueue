@@ -12,10 +12,9 @@ public sealed class BatchWork
 
     public readonly IList<MultiProcessTask> Tasks = [];
 
-    public void Add(in bool isIoBound, Func<dynamic?> function, string? name = null, int index = 1)
+    public void Add(in bool isIoBound, int index, Func<dynamic?> function, string? name = null)
     {
         name ??= string.Empty;
-        index += Tasks.Count;
         //_ = System.Threading.Interlocked.Increment(ref index); //Sounds clever but there's nothing sharing the index anyway
 
         Tasks.Add(new MultiProcessTask(ref index, in isIoBound, name, () => _ = Results.TryAdd(index, function())));
@@ -31,7 +30,7 @@ public sealed class BatchWork
 
     public void Reset()
     {
-        //Allows use to simply reuse the resource
+        //Allows us to simply reuse the resource
         Tasks.Clear();
         Results.Clear();
     }

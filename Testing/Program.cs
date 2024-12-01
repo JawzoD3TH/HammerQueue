@@ -61,8 +61,8 @@ internal static class Program
             for (var i = 1; i < roundsPerTest; i++)
             {
                 if (i % 2 == 0)
-                    batchWork.Add(true, () => SimulateIoBoundCall(), nameof(SimulateIoBoundCall));
-                else batchWork.Add(false, () => SimulateCpuBoundCall(), nameof(SimulateCpuBoundCall));
+                    batchWork.Add(true, i, () => SimulateIoBoundCall(), nameof(SimulateIoBoundCall));
+                else batchWork.Add(false, i, () => SimulateCpuBoundCall(), nameof(SimulateCpuBoundCall));
             }
 
             await Task.Delay(Thousand);
