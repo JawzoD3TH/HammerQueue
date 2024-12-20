@@ -1,7 +1,7 @@
 # HammerQueue
 
 ## Overview
-To sum it up: "But can it go fast?" HammerQueue is a .NET 9 based library designed to provide cook-the-machine performance. Making it ideal for applications that require "speed not accuracy" process queueing.
+To sum it up: "But can it go fast?" HammerQueue is a .NET 9 based library designed to provide cook-the-machine performance process queueing. Making it ideal for applications that require "speed not accuracy"
 
 ## Features
 - High performance and low latency
