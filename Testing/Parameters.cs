@@ -44,7 +44,7 @@ namespace Testing
 
         public static async Task<BatchWork> TestBAsync(BatchWork batchWork)
         {
-            #region Delete This Region To Use Your Own Code 
+            #region Delete This Region To Use Your Own Code (Even Without HammerQueue.Tasks)
             await HammerQueue.Tasks.RunAsync(batchWork, true).ConfigureAwait(false);
 #if DEBUG
             while (batchWork.Tasks.Count > batchWork.Results.Count)
@@ -58,7 +58,7 @@ namespace Testing
         {
             Console.WriteLine(string.Concat($"{batchWork.Tasks.Count - batchWork.Results.Count} Tasks Failed! Running remaining...",
                     Environment.NewLine, $"Accuracy: {100d * batchWork.Results.Count / batchWork.Tasks.Count}%"));
-            batchWork.RemoveCompleted();
+            await batchWork.RemoveCompletedAsync().ConfigureAwait(false);
             return await HammerQueue.Tasks.RunAsync(batchWork, true).ConfigureAwait(false);
         }
     }

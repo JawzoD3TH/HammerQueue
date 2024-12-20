@@ -26,10 +26,11 @@ public static class Tasks
                 break;
 
             default:
-                var ioTasks = Task.Run(() => Task.WhenAll(batchWork.Tasks.AsReadOnly().AsParallel().Where(x => x.IsIoBound).Select(task => task.RunAsync(recreateIfCompleted))).ConfigureAwait(false));
+                var ioTasks = Task.Run(() => Task.WhenAll(batchWork.Tasks.AsReadOnly().AsParallel().Where(x => x != null && x.IsIoBound)
+                    .Select(task => task.RunAsync(recreateIfCompleted))).ConfigureAwait(false));
                 
-                await Parallel.ForEachAsync(batchWork.Tasks.AsReadOnly().AsParallel().Where(x => x.IsIoBound is false), ParallelOptions, async (task, _) =>
-                await task.RunAsync(recreateIfCompleted).ConfigureAwait(false)).ConfigureAwait(false);
+                await Parallel.ForEachAsync(batchWork.Tasks.AsReadOnly().AsParallel().Where(x => x != null && x.IsIoBound is false), ParallelOptions,
+                    async (task, _) => await task.RunAsync(recreateIfCompleted).ConfigureAwait(false)).ConfigureAwait(false);
 
                 using (ioTasks)
                 {
