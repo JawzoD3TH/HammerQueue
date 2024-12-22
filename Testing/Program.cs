@@ -43,7 +43,7 @@ internal static class Program
             }
         }
 
-        if (batchWork.Results.Count > 0 && batchWork.Tasks.Count >= batchWork.Results.Count)
+        if (!batchWork.Results.IsEmpty && batchWork.Tasks.Count >= batchWork.Results.Count)
             Console.WriteLine($"Accuracy: {100d * batchWork.Results.Count / batchWork.Tasks.Count}%");
     }
 

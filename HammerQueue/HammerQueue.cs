@@ -26,10 +26,14 @@ public static class Tasks
                 break;
 
             default:
-                var ioTasks = Task.Run(() => Task.WhenAll(batchWork.Tasks.AsReadOnly().AsParallel().Where(x => x != null && x.IsIoBound)
+                var ioTasks = Task.Run(() => Task.WhenAll(batchWork.Tasks.AsReadOnly().AsParallel().Where(x => x is
+                    {
+                        IsIoBound: true
+                    })
                     .Select(task => task.RunAsync(recreateIfCompleted))).ConfigureAwait(false));
                 
-                await Parallel.ForEachAsync(batchWork.Tasks.AsReadOnly().AsParallel().Where(x => x != null && x.IsIoBound is false), ParallelOptions,
+                // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+                await Parallel.ForEachAsync(batchWork.Tasks.AsReadOnly().AsParallel().Where(x => x is { IsIoBound: false }), ParallelOptions,
                     async (task, _) => await task.RunAsync(recreateIfCompleted).ConfigureAwait(false)).ConfigureAwait(false);
 
                 using (ioTasks)
