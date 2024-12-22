@@ -29,12 +29,12 @@ namespace Testing
                     break;
 
                 case 1:
-                    await batchWork.Tasks[0].RunAsync();
+                    await batchWork.Tasks[0].RunAsync().ConfigureAwait(false);
                     break;
 
                 default:
                     for (var i = 0; i < batchWork.Tasks.Count; i++)
-                        await batchWork.Tasks[i].RunAsync();
+                        await batchWork.Tasks[i].RunAsync().ConfigureAwait(false);
 
                     break;
             }

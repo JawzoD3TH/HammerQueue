@@ -17,9 +17,10 @@ internal static class Program
         //Edit test cycles, display settings and test names as appropriate
         await TestAsync(1, 5).ConfigureAwait(false);
         await TestAsync(10, 5).ConfigureAwait(false);
-        await TestAsync(100).ConfigureAwait(false);
-        await TestAsync(1000).ConfigureAwait(false);
-        await TestAsync(10_000).ConfigureAwait(false);
+        await TestAsync(100, 5).ConfigureAwait(false);
+        await TestAsync(Thousand).ConfigureAwait(false);
+        await TestAsync(10_000, 5).ConfigureAwait(false);
+        await TestAsync(100_000, 5).ConfigureAwait(false);
 
         Console.WriteLine("-- DONE --");
         Console.ReadKey();
@@ -34,7 +35,7 @@ internal static class Program
         if (roundsPerTest <= 101 && batchWork.Tasks.Count >= batchWork.Results.Count)
         {
             if (batchWork.Results.Count > 10)
-                await Task.Delay(Thousand);
+                await Task.Delay(Thousand).ConfigureAwait(false);
 
             for (var i = 0; i < batchWork.Results.Count; i++)
             {
@@ -65,32 +66,28 @@ internal static class Program
                 else batchWork.Add(false, ref i, () => SimulateCpuBoundCall(), nameof(SimulateCpuBoundCall));
             }
 
-            await Task.Delay(Thousand);
-            Stopwatch.Start();
-
-            batchWork = await TestAAsync(batchWork).ConfigureAwait(false);
-
-            Stopwatch.Stop();
-            Microseconds(testNameA);
-
-            if (showResultsForA)
-                await ShowResultsAsync(roundsPerTest, batchWork).ConfigureAwait(false);
-
-            batchWork.Results.Clear();
-            await Task.Delay(Thousand);
-
-            Stopwatch.Restart();
-
-            batchWork = await TestBAsync(batchWork).ConfigureAwait(false);
-
-            Stopwatch.Stop();
-            Microseconds(testNameB);
-
-            await ShowResultsAsync(roundsPerTest, batchWork).ConfigureAwait(false);
-
-            await Task.Delay(3000);
-
+            await HalfCycleAsync(roundsPerTest, TestAAsync(batchWork), testNameA, showResultsForA).ConfigureAwait(false);
+            await Task.Yield();
+            await HalfCycleAsync(roundsPerTest, TestBAsync(batchWork), testNameB, true).ConfigureAwait(false);
+            await Task.Delay(3500).ConfigureAwait(false); //Time to view results
             batchWork.Reset();
         }
+    }
+
+    public static async Task HalfCycleAsync(int roundsPerTest, Task<BatchWork> task, string testName, bool showResults)
+    {
+        await Task.Delay(Thousand).ConfigureAwait(false);
+        Stopwatch.Start();
+
+        var batchWork = await task.ConfigureAwait(false);
+
+        Stopwatch.Stop();
+        Microseconds(testName);
+
+        if (showResults)
+            await ShowResultsAsync(roundsPerTest, batchWork).ConfigureAwait(false);
+
+        batchWork.Results.Clear();
+        Stopwatch.Reset();
     }
 }

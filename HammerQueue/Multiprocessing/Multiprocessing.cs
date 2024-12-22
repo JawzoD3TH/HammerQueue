@@ -32,7 +32,7 @@ public sealed class BatchWork
                 Tasks.Remove(task);
 
             await Task.Yield();
-        });
+        }).ConfigureAwait(false);
     }
 
     public void Reset()
@@ -79,9 +79,8 @@ public sealed class MultiProcessTask : IDisposable
         using (this)
         {
             _task.Start();
+            await Task.Yield();
             await _task.ConfigureAwait(false);
         };
-
-        await Task.Yield();
     }
 }
