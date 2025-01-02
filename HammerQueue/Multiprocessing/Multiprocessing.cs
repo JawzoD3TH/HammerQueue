@@ -7,8 +7,8 @@ namespace HammerQueue.Multiprocessing;
 
 public sealed class BatchWork
 {
-    public readonly System.Collections.Concurrent.ConcurrentDictionary<int, dynamic?> Results = [];
-    //public readonly Dictionary<int, dynamic?> Results = []; //Faster, just as unreliable
+    //public readonly System.Collections.Concurrent.ConcurrentDictionary<int, dynamic?> Results = [];  //Slower, just as unreliable
+    public readonly Dictionary<int, dynamic?> Results = [];
 
     public readonly IList<MultiProcessTask> Tasks = [];
 
@@ -66,7 +66,10 @@ public sealed class MultiProcessTask : IDisposable
         {
             _task?.Dispose();
         }
-        catch { }
+        catch
+        {
+            // ignored
+        }
     }
 
     public async Task RunAsync(bool recreateIfCompleted = false)
