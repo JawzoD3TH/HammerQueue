@@ -3,11 +3,20 @@
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <Description>MaxDop(e)</Description>
+    <Description>MaxDop(e)
+HammerQueue is a .NET 9 based library designed to provide cook-the-machine performance process queueing. Making it ideal for applications that require "speed not accuracy" In many cases one can rerun failed functions- orders of magnitude faster time-wise, overall.
+
+Features
+High performance and low latency
+Easy integration with .NET 9 applications
+Support for multiple queue types
+Thread-safe operations
+Easy rerunning of failures</Description>
     <Copyright>2024 © Jawid Hassim</Copyright>
-    <PackageProjectUrl></PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/JawzoD3TH/HammerQueue</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/JawzoD3TH/HammerQueue</RepositoryUrl>
+    <Title>Hammer Queue</Title>
   </PropertyGroup>
 
   <ItemGroup>
