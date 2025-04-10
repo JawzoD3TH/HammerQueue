@@ -10,7 +10,8 @@ public static class Tasks
 {
     private static readonly ParallelOptions ParallelOptions = new()
     {
-        MaxDegreeOfParallelism = (Environment.ProcessorCount - 2) //Makes logical sense, get it? :P In reality, we have processors, cores and threads...
+        MaxDegreeOfParallelism = (Environment.ProcessorCount < 3) ? 1 : Environment.ProcessorCount - 1
+        //Makes logical sense, get it? :P In reality, we have processors, cores and threads...
     };
 
     public static async Task<BatchWork> RunAsync(BatchWork batchWork, bool recreateIfCompleted = false, bool reset = false)
