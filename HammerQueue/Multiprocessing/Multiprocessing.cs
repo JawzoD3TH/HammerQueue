@@ -24,7 +24,7 @@ public sealed class BatchWork
     public async Task RemoveCompletedAsync()
     {
         //Not ideal but it's only designed for error cases
-        await Parallel.ForEachAsync(Results.Keys, async (index, _) =>
+        await Parallel.ForEachAsync(Results.Keys.AsParallel().WithDegreeOfParallelism(HammerQueue.Tasks.NumberOfThreads()), async (index, _) =>
         {
             // ReSharper disable once ConditionalAccessQualifierIsNonNullableAccordingToAPIContract
             var task = Tasks.FirstOrDefault(t => t?.Index == index);

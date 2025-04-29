@@ -8,10 +8,12 @@ namespace HammerQueue;
 
 public static class Tasks
 {
+    public static int NumberOfThreads() => (Environment.ProcessorCount < 3) ? 1 : Environment.ProcessorCount - 1;
+    //Makes logical sense, get it? :P In reality, we have processors, cores and threads...
+
     private static readonly ParallelOptions ParallelOptions = new()
     {
-        MaxDegreeOfParallelism = (Environment.ProcessorCount < 3) ? 1 : Environment.ProcessorCount - 1
-        //Makes logical sense, get it? :P In reality, we have processors, cores and threads...
+        MaxDegreeOfParallelism = NumberOfThreads()
     };
 
     public static async Task<BatchWork> RunAsync(BatchWork batchWork, bool recreateIfCompleted = false, bool reset = false)
@@ -27,15 +29,15 @@ public static class Tasks
                 break;
 
             default:
-                var ioTasks = Task.Run(() => Task.WhenAll(batchWork.Tasks.AsReadOnly().AsParallel().Where(x => x is
+                var ioTasks = Task.Run(() => Task.WhenAll(batchWork.Tasks.AsReadOnly().AsParallel().WithDegreeOfParallelism(NumberOfThreads()).Where(x => x is
                     {
                         IsIoBound: true
                     })
                     .Select(task => task.RunAsync(recreateIfCompleted))).ConfigureAwait(false));
                 
                 // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
-                await Parallel.ForEachAsync(batchWork.Tasks.AsReadOnly().AsParallel().Where(x => x is { IsIoBound: false }), ParallelOptions,
-                    async (task, _) => await task.RunAsync(recreateIfCompleted).ConfigureAwait(false)).ConfigureAwait(false);
+                await Parallel.ForEachAsync(batchWork.Tasks.AsReadOnly().AsParallel().WithDegreeOfParallelism(NumberOfThreads()).Where(x => x is { IsIoBound: false }),
+                    ParallelOptions, async (task, _) => await task.RunAsync(recreateIfCompleted).ConfigureAwait(false)).ConfigureAwait(false);
 
                 using (ioTasks)
                 {
