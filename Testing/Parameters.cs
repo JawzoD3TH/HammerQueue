@@ -33,8 +33,8 @@ namespace Testing
                     break;
 
                 default:
-                    for (var i = 0; i < batchWork.Tasks.Count; i++)
-                        await batchWork.Tasks[i].RunAsync().ConfigureAwait(false);
+                    foreach (var task in batchWork.Tasks)
+                        await task.RunAsync().ConfigureAwait(false);
 
                     break;
             }

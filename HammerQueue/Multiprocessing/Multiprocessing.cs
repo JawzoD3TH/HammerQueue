@@ -15,7 +15,7 @@ public sealed class BatchWork
     public void Add(in bool isIoBound, ref int index, Func<dynamic?> function, string? name = null)
     {
         name ??= string.Empty;
-        //_ = System.Threading.Interlocked.Increment(ref index); //Sounds clever but there's nothing sharing the index anyway
+        //_ = System.Threading.Interlocked.Increment(ref index); //Sounds clever, but there's nothing sharing the index anyway
 
         int curIndex = index;
         Tasks.Add(new MultiProcessTask(ref index, in isIoBound, name, () => _ = Results.TryAdd(curIndex, function())));
@@ -23,7 +23,7 @@ public sealed class BatchWork
 
     public async Task RemoveCompletedAsync()
     {
-        //Not ideal but it's only designed for error cases
+        //Not ideal, but it's only designed for error cases
         await Parallel.ForEachAsync(Results.Keys.AsParallel().WithDegreeOfParallelism(HammerQueue.Tasks.NumberOfThreads()), async (index, _) =>
         {
             // ReSharper disable once ConditionalAccessQualifierIsNonNullableAccordingToAPIContract
@@ -62,7 +62,7 @@ public sealed class MultiProcessTask : IDisposable
 
     public void Dispose()
     {
-        try //Ideally shouldn't be necessary to wrap the dispose try/catch but sometimes a task state is not as expected
+        try //Ideally shouldn't be necessary to wrap the ?.Dispose() in a try/ catch, but sometimes a task state is not as expected
         {
             _task?.Dispose();
         }
@@ -84,6 +84,6 @@ public sealed class MultiProcessTask : IDisposable
             _task.Start();
             await Task.Yield();
             await _task.ConfigureAwait(false);
-        };
+        }
     }
 }
